@@ -1,0 +1,50 @@
+var sheetName = 'formsheet';
+var scriptProp = PropertiesService.getScriptProperties();
+
+function intialSetup() {
+  var activeSpreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  scriptProp.setProperty('key', activeSpreadsheet.getId());
+}
+
+function doPost(e) {
+  var lock = LockService.getScriptLock();
+  lock.tryLock(10000);
+
+  try {
+    var doc = SpreadsheetApp.openById(scriptProp.getProperty('key'));
+    var sheet = doc.getSheetByName(sheetName);
+
+    var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+    var nextRow = sheet.getLastRow() + 1;
+
+    // Retrieve the unique identifier from the request headers
+    var uniqueID = e.parameter['X-Unique-ID'];
+
+    // Check if the unique identifier already exists in the sheet
+    var dataRange = sheet.getRange(2, 1, sheet.getLastRow() - 1, 1); // Assuming the unique IDs are in the first column
+    var data = dataRange.getValues();
+    for (var i = 0; i < data.length; i++) {
+      if (data[i][0] === uniqueID) {
+        return ContentService.createTextOutput(JSON.stringify({ 'result': 'error', 'error': 'Duplicate data' }))
+          .setMimeType(ContentService.MimeType.JSON);
+      }
+    }
+
+    var newRow = headers.map(function (header) {
+      return header === 'timestamp' ? new Date() : e.parameter[header];
+    });
+
+    // Add the unique identifier to the newRow array
+    newRow.push(uniqueID);
+
+    sheet.getRange(nextRow, 1, 1, newRow.length).setValues([newRow]);
+
+    return ContentService.createTextOutput(JSON.stringify({ 'result': 'success', 'row': nextRow }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (e) {
+    return ContentService.createTextOutput(JSON.stringify({ 'result': 'error', 'error': e }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } finally {
+    lock.releaseLock();
+  }
+}

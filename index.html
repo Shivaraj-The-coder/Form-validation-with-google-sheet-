@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Document</title>
+
+</head>
+<style>
+body {
+background-color: #D1EAF0;
+margin: 0;
+padding: 0;
+}
+
+.formdesign input {
+width: 50%;
+background: linear-gradient(0deg, #fff, #fff), linear-gradient(0deg, #e5e7ea, #e5e7ea);
+border: none;
+box-shadow: -5px 4px 20px 0 #0000001a;
+font-family: Raleway;
+font-size: 18px;
+font-weight: 500;
+line-height: 21px;
+outline: none;
+padding: 10px 10px 10px 20px;
+}
+
+.formdesign {
+margin-bottom: 10px;
+}
+
+.page-center {
+max-width: 1000px;
+margin: 0 auto;
+padding: 0 40px;
+}
+
+.heading {
+padding: 40px 0 20px 0;
+}
+
+.heading h2 {
+font-size: 34px;
+line-height: 40px;
+font-weight: 700;
+font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+color: #fff;
+}
+
+.but {
+text-align: center;
+padding: 10px 30px;
+border: none;
+color: #fff;
+font-size: 16px;
+background-color: orange;
+border-radius: 5px;
+}
+input#age {
+color: #167716;
+font-weight: 500;
+}
+select#gender {
+width: 53%;
+font-size: 18px;
+border: none;
+color: #757575;
+background: linear-gradient(0deg,#fff,#fff),linear-gradient(0deg,#e5e7ea,#e5e7ea);
+box-shadow: -5px 4px 20px 0 #0000001a;
+font-family: Raleway;
+font-weight: 500;
+line-height: 21px;
+outline: none;
+padding: 10px 10px 10px 16px;
+}
+span.form-error {
+color: red;
+}
+@media(max-width:600px){
+.formdesign input {
+width: 100%;
+}
+select#gender {
+width: 100%;
+}
+}
+/* label[for="showPassword"] {
+cursor: pointer;
+user-select: none;
+margin-left: 10px;
+}
+
+#showPassword {
+display: none;
+} */
+</style>
+
+<body>
+<div class="page-center">
+    <div class="heading">
+        <h2>THIS IS FORM VALIDATION</h2>
+    </div>
+    <form name="myForm" action="https://script.google.com/macros/s/AKfycbxAeAx4iTfMTSwyrc2AdY3X7mUPEYDfk-Rsb0YsO4gbsg-AoRXSrYkPu2v11SlKnIvVbQ/exec" onsubmit="return validateForm()" method="post">
+        
+            <div class="formdesign" id="name">
+                <input id="myInput"  type="text" name="fname" placeholder="First Name" required> <span class="form-error"></span>
+            </div>
+            <div class="formdesign" id="email">
+                <input id="myInput" type="email" name="email" placeholder="Email Id" required> <span class="form-error"></span>
+            </div>
+    
+            <div class="formdesign" id="phone">
+                <input id="myInput" type="phone" name="phone" placeholder="Ph Number" required> <span class="form-error">  </span>
+            </div>
+            <div class="formdesign" id="name" >
+                <select name="gender" id="gender">
+                    <option>Select Gender</option>
+                    <option>Male</option>
+                    <option>Female</option>
+                </select>
+            </div>
+    
+            <div class="formdesign" id="name" >
+            <input id="age" name="age" type="number" placeholder="Enter your age">
+            </div>
+
+            <div class="formdesign" id="pass">
+                <input id="myInput" type="password" name="pass" placeholder="Pasword" required> <span class="form-error"> </span>
+            </div>
+            <div class="formdesign" id="cpass">
+                <input id="myInput" type="password" name="cpass" placeholder="Confirm password" required> <span class="form-error"> </span>
+            </div>
+            <div class="sub-button"><input type="submit" value="submit" class="but" ></div>
+    </form>
+    
+</div>
+<!-- <label for="password">Password:</label>
+<input type="password" id="password" name="password">
+<input type="checkbox" id="showPassword">
+<label for="showPassword">Show Password</label> -->
+
+</body>
+
+<script>
+function clearErrors(){
+let error = document.getElementsByClassName('form-error');
+for(let item of error){
+item.innerHTML = "";
+}
+}
+function seterror(id, error) {
+// sets error inside tag of id
+element = document.getElementById(id);
+element.getElementsByClassName('form-error')[0].innerHTML = error;
+}
+
+function validateForm() {
+let returnval = true;
+clearErrors();
+
+// name validation
+let name = document.forms["myForm"]["fname"].value;
+if  (name.length < 4 ){
+seterror("name","*length of name is too short");
+returnval = false;
+}
+
+let nameReg = /^[\sA-Za-z]+[\sA-Za-z]*$/;
+if  (!name.match(nameReg) ){
+seterror("name","*Only Letter Are Allowed");
+returnval = false;
+}
+
+// email validation
+let email = document.forms["myForm"]["email"].value;
+let emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+if (!emailRegex.test(email)) {
+seterror("email","*Please enter a valid email address");
+returnval = false;
+}
+
+
+// phone number validation
+let phone = document.forms["myForm"]["phone"].value;
+let phoneno =  /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
+if  (!phone.match(phoneno) ){
+seterror("phone","*enter a valid phone number");
+returnval = false;
+}
+
+// password validation
+let pass = document.forms["myForm"]["pass"].value;
+
+let emojiRegex = /[\uD800-\uDBFF][\uDC00-\uDFFF]/; // Regular expression to match emojis
+if (emojiRegex.test(pass)) {
+seterror("pass","* Emojis are not allowed in the password field.");
+returnval = false;
+}
+
+let upper = /[A-Z]/;
+if  (!pass.match(upper) ) {
+seterror("pass","* password must contain at least one uppercase.");
+returnval = false;
+}
+
+let char = /(?=.*\W)/;
+if  (!pass.match(char) ) {
+seterror("pass","* password must contain alteast one special character");
+returnval = false;
+}
+
+if  (pass.length > 10 ) {
+seterror("pass","*password is too long");
+returnval = false;
+} 
+
+if  (pass.length < 4 ) {
+seterror("pass","*password is too short");
+returnval = false;
+}
+
+// confirm passsword
+let cpass = document.forms["myForm"]["cpass"].value;
+if  (pass != cpass ) {
+seterror("cpass","* password doesnt match ");
+returnval = false;
+}
+
+
+return returnval;
+};
+
+
+
+
+
+
+</script>
+</html>
